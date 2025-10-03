@@ -7,7 +7,8 @@ Idea 2: I would like to analyze the evolution of digital payment systems in Indi
 
 ## Data Sources
 
-### Data Source 1: PMFBY District Level
+### Data Source 1: ISB India Data Portal
+#### Dataset: PMFBY District Level
 
 URL: https://indiadataportal.com/p/pradhan-mantri-fasal-bima-yojana-pmfby/r/moafw-pmfby-dt-sn-syx
 
@@ -15,7 +16,8 @@ Size: 6161 rows, 27 columns
 
 Description: Introduced in 2016, this government scheme provides insurance coverage and financial support to farmers in the event of crop loss caused by natural calamities, pests, or diseases. The dataset includes district-level information on loan and insurance disbursements, coverage by farmer demographics like gender, caste, and farm size, and scheme participation from 2018 to 2022.
 
-### Data Source 2: Daily Rainfall Data - District Level
+### Data Source 2: ISB India Data Portal
+#### Dataset: Daily Rainfall Data - District Level
 
 URL: https://indiadataportal.com/p/climate-data/r/wris-daily_rainfall_district-dt-dl-imd
 
@@ -23,7 +25,8 @@ Size: 3577399 rows, 9 columns
 
 Description: This dataset provides daily, district-level rainfall measurements across India from 2018 to 2022. It can be used to analyze weather variability, seasonal patterns, and extreme events. The data allows us to explore agricultural or policy outcomes using rain as an explanetory variable.
 
-### Data Source 3: The Resurve Bank of India Digital Payments
+### Data Source 3: ISB India Data Portal
+#### Dataset: The Resurve Bank of India Digital Payments
 
 URL: [https://indiadataportal.com/p/climate-data/r/wris-daily_rainfall_district-dt-dl-imd](https://indiadataportal.com/p/reserve-bank-of-india/r/rbi-payment_systems_settlements-in-dl-zau)
 
