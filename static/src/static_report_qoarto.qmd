@@ -12,7 +12,8 @@ format:
       - typst-template.typ
 country_code: "India"
 color: "c66733"
-# I used LLMs to understnad basic text, image, and grid typst format. 
+# I used LLMs to understnad basic text, image, and grid typst format and syntax. 
+# 
 ---
 # Pradhan Mantri Fasal Bima Yojana (PMFBY) and the Northeast
 ## Introduction
