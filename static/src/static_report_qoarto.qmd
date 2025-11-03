@@ -13,7 +13,8 @@ format:
 country_code: "India"
 color: "c66733"
 # I used LLMs to understnad basic text, image, and grid typst format and syntax. 
-# 
+# Elements of design and formattign were inspired by Galli, K. (n.d.). country-analytics (Version LATEST). GitHub. https://github.com/KeithGalli/country-analytics. I adapted/edited their .typ file utilized above. 
+
 ---
 # Pradhan Mantri Fasal Bima Yojana (PMFBY) and the Northeast
 ## Introduction
