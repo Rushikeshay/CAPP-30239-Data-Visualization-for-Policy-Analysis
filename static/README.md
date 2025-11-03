@@ -21,4 +21,4 @@ Goal: To understand why Northeast India, despite facing severe implementation ch
 
 ## Design and Formattign 
 
-- Galli, K. (n.d.). country-analytics (Version LATEST). GitHub. https://github.com/KeithGalli/country-analytics
+- Adapted typst source files from: Galli, K. (n.d.). country-analytics (Version LATEST). GitHub. https://github.com/KeithGalli/country-analytics
