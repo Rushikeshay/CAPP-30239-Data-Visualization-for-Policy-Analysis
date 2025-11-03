@@ -18,7 +18,3 @@ Goal: To understand why Northeast India, despite facing severe implementation ch
 **Geospatial Data**
 
 - SimpleMaps. (2024). India GIS Data - Admin Level 1 Boundaries. https://simplemaps.com/gis/country/in#admin1
-
-## Design and Formattign 
-
-- Adapted typst source files from: Galli, K. (n.d.). country-analytics (Version LATEST). GitHub. https://github.com/KeithGalli/country-analytics
