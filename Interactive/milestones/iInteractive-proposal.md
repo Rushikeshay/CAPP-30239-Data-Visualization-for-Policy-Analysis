@@ -30,8 +30,8 @@ Motivatios:
 
 ## Mockup
 Here are two potential exmaples of my interactive tool. I believe my final tool will be a combination of both examples. 
-mock1.png
-mock2.png
+![Alt text describing the image](mocks/mock1.png)
+![Alt text describing the image](mocks/mock2.png)
 
 
 ## Data Sources
