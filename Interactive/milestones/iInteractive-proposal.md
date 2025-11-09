@@ -6,15 +6,24 @@ Democratic values around the world are being challenged. Freedom of speech and p
 
 ## Technical Plan re: Option A/B/C/D
 
-Option A: Create one large visualization with dropdown menus for geographic regions (countries/continents), motivators, and triggers. The user can explore the data to see descriptions of these protests such as their size, duration, and policy or political outcomes. This information can be presented using various visualizations, such as charts (for example, a bubble chart to show protest size).
+### Option A
+Create one large visualization with dropdown menus for geographic regions (countries/continents), motivators, and triggers. The user can explore the data to see descriptions of these protests such as their size, duration, and policy or political outcomes. This information can be presented using various visualizations, such as charts (for example, a bubble chart to show protest size).
 d3-scale, d3-axis, d3-selection, d3-format, d3-array, d3-transition 
+
 Motivations: 
+
 1. https://carnegieendowment.org/features/global-protest-tracker?lang=en. this is also the data source. While they use a map, I don’t think it’s used effectively. I would rather keep only the dropdown menu and create more informative boxes and charts that go beyond simply summarizing protests.
 2. https://acleddata.com/platform/conflict-index-dashboard. this tool helps visualize a few aspects of conflicts around the world by country. I like how it focuses on one specific aspect of the information. For me, that aspect could be the size of protests and whether there was an outcome or not.
+
 OR
-Option C: A world map displaying protest information for each country. I can include hover or tooltip boxes with country details. I would like to take this further by showing country profiles below the map in separate boxes. I can also create a slider showing democracy index rankings or scores, allowing users to select countries based on their democratic standing and view policy or political outcomes at different stages. 
+
+### Option C
+
+A world map displaying protest information for each country. I can include hover or tooltip boxes with country details. I would like to take this further by showing country profiles below the map in separate boxes. I can also create a slider showing democracy index rankings or scores, allowing users to select countries based on their democratic standing and view policy or political outcomes at different stages. 
 Libraries: MapLibreGL, Plotly or D3 + TopoJSON 
+
 Motivatios: 
+
 1. https://digitaldevelopmentcompass.undp.org/. I am currently interning here and our team created this tool. I like it because it really allows you to explore all the data at hand. 
 2. https://www.undp.org/acceleratorlabs/peoplepowered/dataviz/SatoshiGaneko A similar country level tool. 
 
