@@ -30,16 +30,11 @@ Motivatios:
 
 ## Mockup
 Here are two potential exmaples of my interactive tool. I believe my final tool will be a combination of both examples. 
-![Alt text describing the image](mocks/mock1.png)
-![Alt text describing the image](mocks/mock2.png)
+<img width="600" alt="Description of image" src="https://github.com/Rushikeshay/CAPP-30239-Data-Visualization-for-Policy-Analysis/raw/main/Interactive/mocks/mock1.png" />
+<img width="600" alt="Description of image" src="https://github.com/Rushikeshay/CAPP-30239-Data-Visualization-for-Policy-Analysis/raw/main/Interactive/mocks/mock2.png" />
 
 
 ## Data Sources
-
-{
-include 1-3 data sources with the following,
-you may re-use data sources from before or switch topics
-}
 
 ### Data Source 1: {Name}
 
@@ -56,7 +51,5 @@ Size: 3183 rows, 4 columns
 This is the Global Democracy Index compiled by The Economist Intelligence Unit (EIU). It is one of the most widely used indicators for assessing the state of democracy across countries. The index evaluates nations based on criteria such as electoral processes, civil liberties, government functioning, political participation, and political culture. 
 
 ## Questions
-
-{Numbered list of questions for course staff, if any.}
 
 1. The Carnegie data, while very good on their website, has an issue when downloaded, the start_date column does not show the year of the protests. It only displays the day and month. On their website, however, the year is available. I need to find a way to include the year as well. Do you have any suggestions on how I could do that?
