@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Protests Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5dc;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Map formatting */
+        .map-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .map-section h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        #map-container {
+            min-height: 500px;
+        }
+
+        /* Country profile box */
+        .country-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .country-panel.active {
+            display: block;
+        }
+
+        .country-panel h2 {
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+
+        /* Map styles */
+        .country {
+            stroke: #000000;
+            stroke-width: 0.5;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .country:hover {
+            stroke: #333;
+            stroke-width: 1.5;
+            opacity: 0.8;
+        }
+
+        .country.selected {
+            stroke: #000;
+            stroke-width: 2;
+        }
+
+        .country.no-data {
+            fill: #f0f0f0;
+        }
+
+        /* Country protest panels */
+        .summary-section {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .protest-card {
+            background: #fafafa;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+
+        .protest-card h4 {
+            color: #2196F3;
+            margin-bottom: 10px;
+        }
+
+        .protest-detail {
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .protest-detail strong {
+            color: #333;
+            display: inline-block;
+            min-width: 150px;
+        }
+
+        .motivation-tags {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .tag.violent {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .tag.large {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        /* Legend styles. I used LLM to get suggestions on how to insert a legend and its formatting*/
+        .legend {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .legend h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .legend-scale {
+            display: flex;
+            height: 20px;
+            margin-bottom: 10px;
+        }
+
+        .legend-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Global Protests Tracker</h1>
+        <p class="description">
+            Interactive visualization of global protests (2017-2024) from Carnegie Endowment for International Peace
+        </p>
+    </header>
+
+    <!-- Map -->
+    <section class="map-section">
+        <h2>World Map</h2>
+        <div id="map-container"></div>
+        
+        <!-- Map's legend -->
+        <div class="legend">
+            <h3>Number of Protests</h3>
+            <div class="legend-scale" id="legend-scale"></div>
+            <div class="legend-labels" id="legend-labels"></div>
+        </div>
+    </section>
+
+    <!-- Country profile set up -->
+    <div class="country-panel" id="country-panel">
+        <h2 id="country-name">Select a Country</h2>
+        
+        <div class="summary-section">
+            <p><strong>Total Protests:</strong> <span id="protest-count">0</span></p>
+        </div>
+
+        <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+
+        <h3>Protests:</h3>
+        <div id="protests-list"></div>
+    </div>
+
+    <script>
+        // Global variables, I adapted some lines of code from https://d3-graph-gallery.com/graph/choropleth_basic.html.
+        // I also used LLM to give me formatting suggestions after I had built the basic map. 
+        let protestData = [];
+        let protestCountByCountry = new Map();
+        let colorScale;
+        
+        // Map dimensions
+        const width = 960;
+        const height = 500;
+
+        // SVG element
+        const svg = d3.select('#map-container')
+            .append('svg')
+            .attr('width', '100%')
+            .attr('height', height)
+            .attr('viewBox', `0 0 ${width} ${height}`);
+
+        // Projection
+        const projection = d3.geoNaturalEarth1()
+            .scale(width / 6)
+            .translate([width / 2, height / 2]);
+
+        const path = d3.geoPath().projection(projection);
+
+        // Group for all countries
+        const g = svg.append('g');
+
+        // Loading csv using .then method
+        d3.csv('protest.csv').then(data => {
+            protestData = data;
+            console.log('Loaded protests:', protestData.length); // consol log functions were suggestions from LLMs 
+            console.log('Sample protest:', protestData[0]);
+            
+            // Count protests per country
+            protestData.forEach(protest => {
+                const country = protest.Country;
+                if (country) {
+                    protestCountByCountry.set(country, (protestCountByCountry.get(country) || 0) + 1);
+                }
+            });
+            
+            console.log('Protest counts by country:', Array.from(protestCountByCountry.entries()));
+            
+            // Get the range of protest counts for legend 
+            const counts = Array.from(protestCountByCountry.values());
+            const maxProtests = Math.max(...counts);
+            const minProtests = Math.min(...counts);
+            
+            // Creating legend scale 
+            colorScale = d3.scaleSequential()
+                .domain([0, maxProtests])
+                .interpolator(d3.interpolateBlues);
+            
+            createLegend(maxProtests);
+            loadMap();
+        })
+        // Legend I used https://observablehq.com/@d3/color-legend and LLMs to learn more about 
+        // creating color scheme for legend. 
+        function createLegend(maxValue) {
+            const legendScale = d3.select('#legend-scale');
+            const legendLabels = d3.select('#legend-labels');
+            // Gradient 
+            const steps = 100;
+            for (let i = 0; i < steps; i++) {
+                const value = (i / steps) * maxValue;
+                legendScale.append('div')
+                    .style('flex', '1')
+                    .style('background-color', colorScale(value));
+            }
+            
+            // Create labels
+            const labelValues = [0, Math.floor(maxValue * 0.25), Math.floor(maxValue * 0.5), 
+                                 Math.floor(maxValue * 0.75), maxValue];
+            
+            labelValues.forEach(val => {
+                legendLabels.append('span').text(val);
+            });
+        }
+
+        function loadMap() {
+            d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+                .then(data => {
+                    const countries = topojson.feature(data, data.objects.countries);
+
+                    g.selectAll('path')
+                        .data(countries.features)
+                        .enter()
+                        .append('path')
+                        .attr('class', d => {
+                            const count = protestCountByCountry.get(d.properties.name);
+                            return count ? 'country' : 'country no-data';
+                        })
+                        .attr('d', path)
+                        .attr('fill', d => {
+                            const count = protestCountByCountry.get(d.properties.name);
+                            return count ? colorScale(count) : '#f0f0f0';
+                        })
+                        .on('click', function(event, d) {
+                            // Remove previous selection
+                            g.selectAll('.country').classed('selected', false);
+                            
+                            // Highlight clicked country
+                            d3.select(this).classed('selected', true);
+                            
+                            // Show country panel 
+                            showCountryPanel(d.properties.name);
+                        })
+                })
+        }
+
+        function showCountryPanel(countryName) {
+            console.log('Showing panel for:', countryName);
+            
+            // Filter protests for this country
+            const countryProtests = protestData.filter(p => p.Country === countryName);
+            
+            // Update country name
+            document.getElementById('country-name').textContent = countryName;
+            
+            // Update protest count
+            document.getElementById('protest-count').textContent = countryProtests.length;
+            
+            // Show the panel
+            document.getElementById('country-panel').classList.add('active');
+            
+            // Display protests
+            displayProtests(countryProtests);
+            
+            // Scroll to panel when clicked 
+            document.getElementById('country-panel').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function displayProtests(protests) {
+            const container = document.getElementById('protests-list');
+            
+            if (protests.length === 0) {
+                container.innerHTML = '<p style="color: #999; font-style: italic;">No protests found for this country.</p>';
+                return;
+            }
+            
+            // A seperate HTML for each protest. I was able to write logit for displaying information about one protest. 
+            // After creating divs for each class I wanted to show, I asked LLMs how to create a loop per protest.
+            // I alsp used LLMs for creating the last class of motivation tags. 
+            let html = '';
+            
+            protests.forEach(protest => {
+                html += `
+                    <div class="protest-card">
+                        <h4>${protest['Protest Name'] || 'Unnamed Protest'}</h4>
+                        
+                        <div class="protest-detail">
+                            <strong>Start Date:</strong> ${protest['Start Date'] || 'N/A'}
+                        </div>
+                        
+                        <div class="protest-detail">
+                            <strong>Freedom Rating:</strong> ${protest['Freedom Rating (Status)'] || 'N/A'}
+                        </div>
+                        
+                        <div class="protest-detail">
+                            <strong>Triggers:</strong> ${protest['Triggers'] || 'N/A'}
+                        </div>
+                        
+                        <div class="protest-detail">
+                            <strong>Motivations:</strong> ${protest['Motivations'] || 'N/A'}
+                        </div>
+                        
+                        <div class="protest-detail">
+                            <strong>Key Participants:</strong> ${protest['Key Participants'] || 'N/A'}
+                        </div>
+                        
+                        <div class="protest-detail">
+                            <strong>Duration:</strong> ${protest['Duration'] || 'N/A'}
+                        </div>
+                        
+                        <div class="protest-detail">
+                            <strong>Outcomes:</strong> ${protest['Outcomes'] || 'N/A'}
+                        </div>
+                        
+                        <div class="protest-detail">
+                            <strong>Size Category:</strong> ${protest['Size category'] || 'N/A'}
+                        </div>
+                        
+                        <div class="motivation-tags"> 
+                            ${protest['Economic motivation?'] === 'X' ? '<span class="tag">Economic</span>' : ''}
+                            ${protest['Political motivation?'] === 'X' ? '<span class="tag">Political</span>' : ''}
+                            ${protest['Corruption motivation?'] === 'X' ? '<span class="tag">Corruption</span>' : ''}
+                            ${protest['Gender motivation?'] === 'X' ? '<span class="tag">Gender</span>' : ''}
+                            ${protest['Large protests (Over 100,000 protesting)'] === 'X' ? '<span class="tag large">Large Protest</span>' : ''}
+                            ${protest['Violent government response'] === 'X' ? '<span class="tag violent">Violent Response</span>' : ''}
+                            ${protest['Large protests (Over 100,000 protesting)'] === 'X' ? '<span class="tag large">Large Protests</span>' : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+    </script>
+
+</body>
+</html>
