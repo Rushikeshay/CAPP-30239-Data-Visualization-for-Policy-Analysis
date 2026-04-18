@@ -6,5 +6,7 @@ There are two main projects included:
 
 ## Static Data Visualization Report
 An analysis of the Pradhan Mantri Fasal Bima Yojana (PMFBY), featuring a time series approach to examine regional heterogeneity in the program’s success.
+Technologies used: Python, Altair, Markdown
 ## Interactive Web Portal
-A web-based application exploring the Global Protests Index from the Carnegie Institute for International Peace. The portal allows users to explore protest activity around the world by country, year, and topic.
+A web-based application exploring the Global Protests Tracker from the Carnegie Endowment for International Peace. The portal allows users to explore protest activity around the world by country, year, and topic.
+Technologies used: JavaScript, HTML, CSS, Python
